@@ -3,6 +3,13 @@ import json
 import pandas as pd
 from sqlalchemy import create_engine
 
+# postgresql connection data
+postgres_user = ""
+password = ""
+host = ""
+port = ""
+table = ""
+
 # Replace with your GitHub token and repository details
 GITHUB_TOKEN = ""
 REPO_OWNER = "kubernetes"
@@ -89,10 +96,10 @@ with open("flattened_github_issues.json", "w") as f:
 print(f"Fetched and flattened {len(flattened_issues)} closed issues.")
 
 
-# Carregar JSON
+# Load JSON
 df = pd.read_json('flattened_github_issues.json')
 
-# Limpar caracteres nulos (\x00) em todas as colunas do tipo string
+# Clean null char (\x00) in all string type columns
 def clean_null_characters(value):
     if isinstance(value, str):
         return value.replace('\x00', '')  # Remove o caractere nulo
@@ -100,10 +107,10 @@ def clean_null_characters(value):
 
 df = df.applymap(clean_null_characters)
 
-# Criar conexão com o PostgreSQL
-engine = create_engine('postgresql://user:pass@host:5432/kubernetes')
+# Create connection with postgres
+engine = create_engine(f'postgresql://{postgres_user}:{password}@{host}:{port}/{table}')
 
-# Inserir no banco
+# insert data
 try:
     df.to_sql('github_issues', engine, if_exists='replace', index=False)
     print("Dados inseridos com sucesso!")
