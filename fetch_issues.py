@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 postgres_user = ""
 password = ""
 host = ""
-port = ""
+port = "5432" # default port
 table = ""
 
 # Replace with your GitHub token and repository details
